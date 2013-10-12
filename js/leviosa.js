@@ -261,12 +261,16 @@ Leap.loop({enableGestures: true}, function (frame, done){
   }
 
   // if (frame.pointables.length === 5)
-  if (frame.gestures && frame.gestures.length > 0)
+  // if (frame.gestures && frame.gestures.length > 0)
+  // {
+  //   if (frame.gestures[0].type === 'swipe' && frame.gestures[0].state === 'stop')
+  //   {
+  //     action = 'Avada Kedavra';
+  //   }
+  // }
+  if (frame.pointables.length === 5)
   {
-    if (frame.gestures[0].type === 'swipe' && frame.gestures[0].state === 'stop')
-    {
-      action = 'Avada Kedavra';
-    }
+    action = 'Avada Kedavra';
   }
   else if (frame.pointables.length === 4)
   {
@@ -292,6 +296,8 @@ Leap.loop({enableGestures: true}, function (frame, done){
     clearTimeout(timeout);
   }
 
+  console.log(action);
+  console.log(last_action)
   if(action === last_action && offset >= delay_between_actions || action == 'Avada Kedavra')
   {
     intent = true;
@@ -303,13 +309,19 @@ Leap.loop({enableGestures: true}, function (frame, done){
     clearTimeout(timeout);
   }
 
+  if (action === null)
+  {
+    intent = false;
+  }
+
   if(intent)
   {
     var color;
+    console.log(action);
     switch(action)
     {
       case 'Avada Kedavra':
-        timeout = setTimeout(function(){ avadaKedavra(); }, 1650);
+        timeout = setTimeout(function(){ avadaKedavra(); }, 1000);
         color = 'rgba(51, 224, 18, 0.5) 0px 0px 20px';
         break;
       case 'Crucio':
