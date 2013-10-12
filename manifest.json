@@ -19,7 +19,6 @@
         "https://*/*"
       ],
       "js": [
-        "js/leaptrainer.min.js",
         "js/leap.js",
         "js/jquery.js",
         "js/magic.js",
