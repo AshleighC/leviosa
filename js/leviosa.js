@@ -54,6 +54,7 @@ $('.spell').css({
   'width': '100%',
   'z-index': '1000',
   'color': 'rgba(0, 0, 0, 0.25)',
+  'text-shadow': '0 0 10px rgba(0, 0, 0, 0.1)',
   'display': 'none',
 })
 
@@ -391,8 +392,8 @@ Leap.loop({enableGestures: true}, function (frame, done){
   // If nothing is happening, reset interaction
   if (frame.pointables === undefined)
   {
-    action = null;
     $('.spell').css('display', 'none');
+    action = null;
     clearTimeout(timeout);
     return;
   }
@@ -400,8 +401,8 @@ Leap.loop({enableGestures: true}, function (frame, done){
   // Look for Swipe Gesture
   if (frame.gestures && frame.gestures.length > 0)
   {
-    $('.spell').html('Swipe');
     action = 'gesture';
+    $('.spell').html('Swipe');
   }
   // Look for Scrolling Gesture
   else if (frame.pointables.length === 2)
@@ -413,15 +414,15 @@ Leap.loop({enableGestures: true}, function (frame, done){
   // Look for Page Transform Gesture
   else if (frame.pointables.length > 2)
   {
-    $('.spell').html('Transform');
     action = 'transform';
+    $('.spell').html('Transform');
   }
   // Nothing is happening, reset actions
   else
-  {
-    $('.spell').css('display', 'none');
+  { 
     action = null;
     clearTimeout(timeout);
+    $('.spell').css('display', 'none');
   }
 
 
