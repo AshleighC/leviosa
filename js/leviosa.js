@@ -1,3 +1,6 @@
+// Code for sending the request to kill the tab
+//chrome.extension.sendRequest({action: "Avada Kedavra"});
+
 // Whether Current Tab Has Focus
 var tab_has_focus = false;
 
