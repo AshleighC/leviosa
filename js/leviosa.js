@@ -10,6 +10,7 @@ var start_action = 0;
 var intent = false;
 var delay_between_actions = 1;
 var timeout = null;
+var tutorial = false;
 
 // Track Leap Motion Connection
 var now, last_poll = new Date().getTime() / 1000;
@@ -268,7 +269,7 @@ Leap.loop({enableGestures: true}, function (frame, done){
   //     action = 'Avada Kedavra';
   //   }
   // }
-  if (frame.pointables.length === 5)
+  if (frame.pointables.length === 10)
   {
     action = 'Avada Kedavra';
   }
@@ -288,6 +289,10 @@ Leap.loop({enableGestures: true}, function (frame, done){
   {
     action = 'Riddikulus';
   }
+  else if (frame.pointables.length === 8)
+  {
+    $('.sidebar-tab').click();
+  }
   else
   { 
     $('.cast-a-spell').css('display', 'block');
@@ -298,7 +303,7 @@ Leap.loop({enableGestures: true}, function (frame, done){
 
   console.log(action);
   console.log(last_action)
-  if(action === last_action && offset >= delay_between_actions || action == 'Avada Kedavra')
+  if(action === last_action && offset >= delay_between_actions || tutorial != true)
   {
     intent = true;
   }
@@ -309,7 +314,7 @@ Leap.loop({enableGestures: true}, function (frame, done){
     clearTimeout(timeout);
   }
 
-  if (action === null)
+  if (action === null || tutorial == true)
   {
     intent = false;
   }
