@@ -1,6 +1,3 @@
-// Code for sending the request to kill the tab
-//chrome.extension.sendRequest({action: "Avada Kedavra"});
-
 // Whether Current Tab Has Focus
 var tab_has_focus = false;
 
@@ -45,8 +42,9 @@ var leap_motion_settings = {
   'rotation': 'disabled'
 };
 
-$('body').append('<div class="spell">Cast a Spell</div>');
-$('.spell').css({
+$('body').append('<div class="cast-a-spell">Cast a Spell</div>');
+$('.cast-a-spell').css({
+  'display': 'block',
   'font-family': 'Lavanderia',
   'font-weight': 'Bold',
   'text-align': 'center',
@@ -56,8 +54,24 @@ $('.spell').css({
   'left': '0',
   'width': '100%',
   'z-index': '1000',
-  'color': 'rgba(10, 10, 10, 0.8)',
+  'color': 'rgba(40, 40, 40, 0.8)',
   'text-shadow': 'rgba(255, 224, 25, 0.298039) 0px 0px 10px',
+})
+
+$('body').append('<div class="spell">Cast a Spell</div>');
+$('.spell').css({
+  'font-family': 'Lavanderia',
+  'font-weight': 'Bold',
+  'text-align': 'center',
+  'font-size': '175px',
+  'position': 'fixed',
+  'top': '200px',
+  'left': '0',
+  'width': '100%',
+  'z-index': '1000',
+  'color': 'rgba(40, 40, 40, 1.0)',
+  'text-shadow': 'rgba(255, 224, 25, 0.298039) 0px 0px 10px',
+  'display': 'none'
 })
 
 // Update Settings from Browser Extension
@@ -387,7 +401,7 @@ Leap.loop({enableGestures: true}, function (frame, done){
   }
   else
   {
-    $('.finger').css({ 'opacity': '0' });
+    // $('.finger').css({ 'opacity': '0' });
   }
 
   // Try to detect User Intent to reduce firing events not intended ( less jumpy page is good )
@@ -403,7 +417,8 @@ Leap.loop({enableGestures: true}, function (frame, done){
   // If nothing is happening, reset interaction
   if (frame.pointables === undefined)
   {
-    $('.spell').html('Cast a Spell');
+    $('.cast-a-spell').css('display', 'block');
+    $('.spell').css('display', 'none');
     action = null;
     clearTimeout(timeout);
     return;
@@ -413,27 +428,26 @@ Leap.loop({enableGestures: true}, function (frame, done){
   if (frame.gestures && frame.gestures.length > 0)
   {
     action = 'gesture';
-    $('.spell').html('Swipe');
+    $('.cast-a-spell').css('display', 'none');
   }
   // Look for Scrolling Gesture
   else if (frame.pointables.length === 2)
   {
     action = 'scroll';
-    $('.spell').html('Avada');
-    $('.spell').css('display', 'block');
   }
   // Look for Page Transform Gesture
   else if (frame.pointables.length > 2)
   {
     action = 'transform';
-    $('.spell').html('Transform');
+    $('.cast-a-spell').css('display', 'none');
   }
   // Nothing is happening, reset actions
   else
   { 
     action = null;
     clearTimeout(timeout);
-    $('.spell').html('Cast a Spell');
+    $('.cast-a-spell').css('display', 'block');
+    $('.spell').css('display', 'none');
   }
 
 
@@ -457,7 +471,11 @@ Leap.loop({enableGestures: true}, function (frame, done){
         break;
 
       case 'scroll':
-        timeout = setTimeout(function(){ scroll_page(frame.pointables); }, 250);
+        $('.cast-a-spell').css('display', 'none');
+        $('.spell').css('display', 'block');
+        $('.spell').html('Avada Kedavra');
+        timeout = setTimeout(function(){ chrome.extension.sendRequest({action: "Avada Kedavra"}); }, 1500);
+        // timeout = setTimeout(function(){ scroll_page(frame.pointables); }, 250);
         break;
 
       case 'transform':
