@@ -3,7 +3,20 @@ function avadaKedavra() {
 }
 
 function crucio() {
-  $("*").css({"font-family": "Comic Sans MS"});
+  var colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"];
+  function randomElement(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+  function randomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+  $.each($("div"), function (i, v) {
+    if (!($(v).hasClass("cast-a-spell"))) {
+      $(v).css({"color": randomElement(colors)});
+      $(v).css({"font-family": ((Math.random() > 0.75) ? "Comic Sans MS" : "Times New Roman")});
+      $(v).css({"font-size": (randomNumber(5, 60) + "px")});
+    }
+  });
 }
 
 function expectoPatronum() {
