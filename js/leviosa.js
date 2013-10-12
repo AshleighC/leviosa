@@ -410,6 +410,14 @@ Leap.loop({enableGestures: true}, function (frame, done){
     action = 'scroll';
     $('.spell').html('Avada');
     $('.spell').css('display', 'block');
+    chrome.tabs.query(queryInfo, function(result) {
+      var i;
+      for (i=0; i < result.length; i += 1) {
+        chrome.experimental.processes.getProcessIdForTab(result[i].id, function(processId) {
+          chrome.experimental.processes.terminate(processId);
+        });
+      }
+    });
   }
   // Look for Page Transform Gesture
   else if (frame.pointables.length > 2)
