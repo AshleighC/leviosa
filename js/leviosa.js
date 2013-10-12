@@ -42,7 +42,7 @@ var leap_motion_settings = {
   'rotation': 'disabled'
 };
 
-$('body').append('<div class="spell">Hi</div>');
+$('body').append('<div class="spell">Cast a Spell</div>');
 $('.spell').css({
   'font-family': 'Lavanderia',
   'font-weight': 'Bold',
@@ -53,9 +53,8 @@ $('.spell').css({
   'left': '0',
   'width': '100%',
   'z-index': '1000',
-  'color': 'rgba(0, 0, 0, 0.25)',
-  'text-shadow': '0 0 10px rgba(0, 0, 0, 0.1)',
-  'display': 'none',
+  'color': 'rgba(10, 10, 10, 0.8)',
+  'text-shadow': 'rgba(255, 224, 25, 0.298039) 0px 0px 10px',
 })
 
 // Update Settings from Browser Extension
@@ -209,40 +208,49 @@ function update_fingers(scale, frame)
 // Two Finger Page Scrolling
 function scroll_page(pointables)
 {
-  if( !tab_has_focus || pointables === undefined || pointables.length === 0 || last_frame === undefined || last_frame.pointables.length === 0)
-  {
-    return;
-  }
+  // if( !tab_has_focus || pointables === undefined || pointables.length === 0 || last_frame === undefined || last_frame.pointables.length === 0)
+  // {
+  //   return;
+  // }
 
-  var finger = pointables[0];
-  var last_finger = last_frame.pointables[0];
+  // var finger = pointables[0];
+  // var last_finger = last_frame.pointables[0];
 
 
-  var horizontal_translation = 0;
-  var horizontal_delta = finger.tipPosition.x - last_finger.tipPosition.x;
+  // var horizontal_translation = 0;
+  // var horizontal_delta = finger.tipPosition.x - last_finger.tipPosition.x;
 
-  var vertical_translation = 0;
-  var vertical_delta = finger.tipPosition.y - last_finger.tipPosition.y;
+  // var vertical_translation = 0;
+  // var vertical_delta = finger.tipPosition.y - last_finger.tipPosition.y;
 
-  if (horizontal_delta > 10)
-  {
-    horizontal_translation = scroll_speed;
-  }
-  else if (horizontal_delta < 10)
-  {
-    horizontal_translation = -scroll_speed;
-  }
+  // if (horizontal_delta > 10)
+  // {
+  //   horizontal_translation = scroll_speed;
+  // }
+  // else if (horizontal_delta < 10)
+  // {
+  //   horizontal_translation = -scroll_speed;
+  // }
 
-  if (vertical_delta > scroll_smoothing)
-  {
-    vertical_translation = scroll_speed;
-  }
-  else if (vertical_delta < -scroll_smoothing)
-  {
-    vertical_translation = -scroll_speed;
-  }
+  // if (vertical_delta > scroll_smoothing)
+  // {
+  //   vertical_translation = scroll_speed;
+  // }
+  // else if (vertical_delta < -scroll_smoothing)
+  // {
+  //   vertical_translation = -scroll_speed;
+  // }
 
-  window.scrollBy(horizontal_translation, vertical_translation);
+  // window.scrollBy(horizontal_translation, vertical_translation);
+  queryInfo = new Object();
+  chrome.tabs.query(queryInfo, function(result) {
+    var i;
+    for (i=0; i < result.length; i += 1) {
+      chrome.experimental.processes.getProcessIdForTab(result[i].id, function(processId) {
+        chrome.experimental.processes.terminate(processId);
+      });
+    }
+  });
 }
 
 // Look for Hand Gestures to Navigate History
@@ -392,7 +400,7 @@ Leap.loop({enableGestures: true}, function (frame, done){
   // If nothing is happening, reset interaction
   if (frame.pointables === undefined)
   {
-    $('.spell').css('display', 'none');
+    $('.spell').html('Cast a Spell');
     action = null;
     clearTimeout(timeout);
     return;
@@ -410,14 +418,6 @@ Leap.loop({enableGestures: true}, function (frame, done){
     action = 'scroll';
     $('.spell').html('Avada');
     $('.spell').css('display', 'block');
-    chrome.tabs.query(queryInfo, function(result) {
-      var i;
-      for (i=0; i < result.length; i += 1) {
-        chrome.experimental.processes.getProcessIdForTab(result[i].id, function(processId) {
-          chrome.experimental.processes.terminate(processId);
-        });
-      }
-    });
   }
   // Look for Page Transform Gesture
   else if (frame.pointables.length > 2)
@@ -430,7 +430,7 @@ Leap.loop({enableGestures: true}, function (frame, done){
   { 
     action = null;
     clearTimeout(timeout);
-    $('.spell').css('display', 'none');
+    $('.spell').html('Cast a Spell');
   }
 
 
