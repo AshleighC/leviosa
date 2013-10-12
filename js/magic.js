@@ -1,5 +1,5 @@
 function avadaKedavra() {
-  timeout = setTimeout(function(){ chrome.extension.sendRequest({ action: "Avada Kedavra" }); }, 1500);
+  chrome.extension.sendRequest({ action: "Avada Kedavra" });
 }
 
 function crucio() {

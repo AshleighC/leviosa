@@ -26,11 +26,10 @@ var scroll_smoothing = 4;
 var finger_size = 70;
 
 // Colors for Fingers
-var rainbow = new Array('#F80C12', '#FF3311', '#FF6644', '#FEAE2D', '#D0C310', '#69D025', '#12BDB9', '#4444DD', '#3B0CBD', '#442299');
-var leap = '#9AC847';
-var dark = '#000000';
-var light = '#FFFFFF';
 var gold = '#f8da00';
+
+// Slideout menu options
+var menu_active = false;
 
 // Setup Default Settings for Leap Motion
 var leap_motion_settings = {
@@ -54,7 +53,7 @@ $('.cast-a-spell').css({
   'left': '0',
   'width': '100%',
   'z-index': '1000',
-  'color': 'rgba(40, 40, 40, 0.8)',
+  'color': 'rgba(40, 40, 40, 0.94)',
   'text-shadow': 'rgba(255, 224, 25, 0.298039) 0px 0px 10px',
 })
 
@@ -69,8 +68,8 @@ $('.spell').css({
   'left': '0',
   'width': '100%',
   'z-index': '1000',
-  'color': 'rgba(40, 40, 40, 1.0)',
-  'text-shadow': 'rgba(255, 224, 25, 0.298039) 0px 0px 10px',
+  'color': 'rgba(40, 40, 40, 0.94)',
+  'text-shadow': 'rgba(255, 224, 25, 0.298039) 0px 0px 20px',
   'display': 'none'
 })
 
@@ -204,21 +203,18 @@ function update_fingers(scale, frame)
 
   // Make sure there are at least two fingers to render, since that is the minimum for an action
   // Also prevents forehead / face from registering as a finger during typing
-  if(frame.fingers.length > 1)
+  for(var j=0; j<frame.fingers.length; j++)
   {
-    for(var j=0; j<frame.fingers.length; j++)
-    {
-      var top = ( height / 2 ) - frame.fingers[j].tipPosition.y;
-      var left = ( width / 2 ) + frame.fingers[j].tipPosition.x;
+    var top = ( height / 2 ) - frame.fingers[j].tipPosition.y;
+    var left = ( width / 2 ) + frame.fingers[j].tipPosition.x;
 
-      $('#finger' + (j+1)).css({
-        'top': 0,
-        'left': 0,
-        'position': 'fixed',
-        'transform': 'translate3d('+left.toFixed(2)+'px, '+top.toFixed(2)+'px, 0)',
-        'opacity': '1.0'
-      });
-    }
+    $('#finger' + (j+1)).css({
+      'top': 0,
+      'left': 0,
+      'position': 'fixed',
+      'transform': 'translate3d('+left.toFixed(2)+'px, '+top.toFixed(2)+'px, 0)',
+      'opacity': '1.0'
+    });
   }
 }
 
@@ -231,7 +227,7 @@ function update_settings()
 
 // Connect to Leap Motion via Web Socket and Manage Actions
 Leap.loop({enableGestures: true}, function (frame, done){
-
+  $('.cast-a-spell').css('display', 'block');
   last_poll = new Date().getTime() / 1000;
 
   // Update Finger Position
@@ -258,14 +254,19 @@ Leap.loop({enableGestures: true}, function (frame, done){
   // If nothing is happening, reset interaction
   if (frame.pointables === undefined)
   {
+    $('.cast-a-spell').css('display', 'block');
     action = null;
     clearTimeout(timeout);
     return;
   }
 
-  if (frame.pointables.length === 5)
+  // if (frame.pointables.length === 5)
+  if (frame.gestures && frame.gestures.length > 0)
   {
-    action = 'Avada Kedavra';
+    if (frame.gestures[0].type === 'swipe' && frame.gestures[0].state === 'stop')
+    {
+      action = 'Avada Kedavra';
+    }
   }
   else if (frame.pointables.length === 4)
   {
@@ -279,6 +280,10 @@ Leap.loop({enableGestures: true}, function (frame, done){
   {
     action = 'Reparo';
   }
+  else if (frame.pointables.length === 6)
+  {
+    action = 'Riddikulus';
+  }
   else
   { 
     $('.cast-a-spell').css('display', 'block');
@@ -287,7 +292,7 @@ Leap.loop({enableGestures: true}, function (frame, done){
     clearTimeout(timeout);
   }
 
-  if(action === last_action && offset >= delay_between_actions)
+  if(action === last_action && offset >= delay_between_actions || action == 'Avada Kedavra')
   {
     intent = true;
   }
@@ -300,22 +305,34 @@ Leap.loop({enableGestures: true}, function (frame, done){
 
   if(intent)
   {
+    var color;
     switch(action)
     {
       case 'Avada Kedavra':
-        avadaKedavra();
+        timeout = setTimeout(function(){ avadaKedavra(); }, 1650);
+        color = 'rgba(51, 224, 18, 0.5) 0px 0px 20px';
         break;
       case 'Crucio':
-        crucio();
+        timeout = setTimeout(function(){ crucio(); }, 1650);
+        color = 'rgba(255, 0, 7, 0.5) 0px 0px 20px';
         break;
       case 'Expecto Patronum':
-        expectoPatronum();
+        timeout = setTimeout(function(){ expectoPatronum(); }, 1650);
+        color = 'rgba(0, 209, 237, 0.5) 0px 0px 20px';
         break;
       case 'Reparo':
-        reparo();
+        timeout = setTimeout(function(){ reparo(); }, 1650);
+        color = 'rgba(255, 224, 25, 0.30) 0px 0px 20px';
+        break;
+      case 'Riddikulus':
+        timeout = setTimeout(function(){ riddikulus(); }, 1650);
+        color = 'rgba(255, 224, 25, 0.30) 0px 0px 20px';
         break;
     }
-    $('.spell').css('display', 'block');
+    $('.spell').css({
+      'display': 'block',
+      'text-shadow': color,
+    });
     $('.spell').html(action);
     $('.cast-a-spell').css('display', 'none');
   }
