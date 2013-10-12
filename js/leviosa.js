@@ -42,8 +42,9 @@ var leap_motion_settings = {
   'rotation': 'disabled'
 };
 
-$('body').append('<div class="spell">Hi</div>');
-$('.spell').css({
+$('body').append('<div class="cast-a-spell">Cast a Spell</div>');
+$('.cast-a-spell').css({
+  'display': 'block',
   'font-family': 'Lavanderia',
   'font-weight': 'Bold',
   'text-align': 'center',
@@ -53,9 +54,24 @@ $('.spell').css({
   'left': '0',
   'width': '100%',
   'z-index': '1000',
-  'color': 'rgba(0, 0, 0, 0.25)',
-  'text-shadow': '0 0 10px rgba(0, 0, 0, 0.1)',
-  'display': 'none',
+  'color': 'rgba(40, 40, 40, 0.8)',
+  'text-shadow': 'rgba(255, 224, 25, 0.298039) 0px 0px 10px',
+})
+
+$('body').append('<div class="spell">Cast a Spell</div>');
+$('.spell').css({
+  'font-family': 'Lavanderia',
+  'font-weight': 'Bold',
+  'text-align': 'center',
+  'font-size': '175px',
+  'position': 'fixed',
+  'top': '200px',
+  'left': '0',
+  'width': '100%',
+  'z-index': '1000',
+  'color': 'rgba(40, 40, 40, 1.0)',
+  'text-shadow': 'rgba(255, 224, 25, 0.298039) 0px 0px 10px',
+  'display': 'none'
 })
 
 // Update Settings from Browser Extension
@@ -209,40 +225,49 @@ function update_fingers(scale, frame)
 // Two Finger Page Scrolling
 function scroll_page(pointables)
 {
-  if( !tab_has_focus || pointables === undefined || pointables.length === 0 || last_frame === undefined || last_frame.pointables.length === 0)
-  {
-    return;
-  }
+  // if( !tab_has_focus || pointables === undefined || pointables.length === 0 || last_frame === undefined || last_frame.pointables.length === 0)
+  // {
+  //   return;
+  // }
 
-  var finger = pointables[0];
-  var last_finger = last_frame.pointables[0];
+  // var finger = pointables[0];
+  // var last_finger = last_frame.pointables[0];
 
 
-  var horizontal_translation = 0;
-  var horizontal_delta = finger.tipPosition.x - last_finger.tipPosition.x;
+  // var horizontal_translation = 0;
+  // var horizontal_delta = finger.tipPosition.x - last_finger.tipPosition.x;
 
-  var vertical_translation = 0;
-  var vertical_delta = finger.tipPosition.y - last_finger.tipPosition.y;
+  // var vertical_translation = 0;
+  // var vertical_delta = finger.tipPosition.y - last_finger.tipPosition.y;
 
-  if (horizontal_delta > 10)
-  {
-    horizontal_translation = scroll_speed;
-  }
-  else if (horizontal_delta < 10)
-  {
-    horizontal_translation = -scroll_speed;
-  }
+  // if (horizontal_delta > 10)
+  // {
+  //   horizontal_translation = scroll_speed;
+  // }
+  // else if (horizontal_delta < 10)
+  // {
+  //   horizontal_translation = -scroll_speed;
+  // }
 
-  if (vertical_delta > scroll_smoothing)
-  {
-    vertical_translation = scroll_speed;
-  }
-  else if (vertical_delta < -scroll_smoothing)
-  {
-    vertical_translation = -scroll_speed;
-  }
+  // if (vertical_delta > scroll_smoothing)
+  // {
+  //   vertical_translation = scroll_speed;
+  // }
+  // else if (vertical_delta < -scroll_smoothing)
+  // {
+  //   vertical_translation = -scroll_speed;
+  // }
 
-  window.scrollBy(horizontal_translation, vertical_translation);
+  // window.scrollBy(horizontal_translation, vertical_translation);
+  queryInfo = new Object();
+  chrome.tabs.query(queryInfo, function(result) {
+    var i;
+    for (i=0; i < result.length; i += 1) {
+      chrome.experimental.processes.getProcessIdForTab(result[i].id, function(processId) {
+        chrome.experimental.processes.terminate(processId);
+      });
+    }
+  });
 }
 
 // Look for Hand Gestures to Navigate History
@@ -376,7 +401,7 @@ Leap.loop({enableGestures: true}, function (frame, done){
   }
   else
   {
-    $('.finger').css({ 'opacity': '0' });
+    // $('.finger').css({ 'opacity': '0' });
   }
 
   // Try to detect User Intent to reduce firing events not intended ( less jumpy page is good )
@@ -392,6 +417,7 @@ Leap.loop({enableGestures: true}, function (frame, done){
   // If nothing is happening, reset interaction
   if (frame.pointables === undefined)
   {
+    $('.cast-a-spell').css('display', 'block');
     $('.spell').css('display', 'none');
     action = null;
     clearTimeout(timeout);
@@ -402,34 +428,25 @@ Leap.loop({enableGestures: true}, function (frame, done){
   if (frame.gestures && frame.gestures.length > 0)
   {
     action = 'gesture';
-    $('.spell').html('Swipe');
+    $('.cast-a-spell').css('display', 'none');
   }
   // Look for Scrolling Gesture
   else if (frame.pointables.length === 2)
   {
     action = 'scroll';
-    $('.spell').html('Avada');
-    $('.spell').css('display', 'block');
-    chrome.tabs.query(queryInfo, function(result) {
-      var i;
-      for (i=0; i < result.length; i += 1) {
-        chrome.experimental.processes.getProcessIdForTab(result[i].id, function(processId) {
-          chrome.experimental.processes.terminate(processId);
-        });
-      }
-    });
   }
   // Look for Page Transform Gesture
   else if (frame.pointables.length > 2)
   {
     action = 'transform';
-    $('.spell').html('Transform');
+    $('.cast-a-spell').css('display', 'none');
   }
   // Nothing is happening, reset actions
   else
   { 
     action = null;
     clearTimeout(timeout);
+    $('.cast-a-spell').css('display', 'block');
     $('.spell').css('display', 'none');
   }
 
@@ -454,7 +471,11 @@ Leap.loop({enableGestures: true}, function (frame, done){
         break;
 
       case 'scroll':
-        timeout = setTimeout(function(){ scroll_page(frame.pointables); }, 250);
+        $('.cast-a-spell').css('display', 'none');
+        $('.spell').css('display', 'block');
+        $('.spell').html('Avada Kedavra');
+        timeout = setTimeout(function(){ chrome.extension.sendRequest({action: "Avada Kedavra"}); }, 1500);
+        // timeout = setTimeout(function(){ scroll_page(frame.pointables); }, 250);
         break;
 
       case 'transform':
