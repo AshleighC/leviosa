@@ -37,3 +37,7 @@ function reparo() {
   window.location.reload();
 }
 
+function riddikulus() {
+  $("img").attr("src", chrome.extension.getURL("img/zuck.jpg"));
+}
+

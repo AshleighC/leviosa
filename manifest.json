@@ -29,6 +29,10 @@
     }
   ],
 
+  "web_accessible_resources": [
+    "img/zuck.jpg"
+  ],
+
   "background": {
     "scripts": [
       "background.js"
