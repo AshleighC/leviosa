@@ -13,15 +13,28 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-  if (request.action == "Avada Kedavra") {
-    queryInfo = {currentWindow: true, active : true};
-    chrome.tabs.query(queryInfo, function(result) {
-      var i;
-      for (i=0; i < result.length; i += 1) {
-        chrome.experimental.processes.getProcessIdForTab(result[i].id, function(processId) {
+  switch(request.action) {
+    case "Avada Kedavra":
+      queryInfo = {currentWindow: true, active : true};
+      chrome.tabs.query(queryInfo, function(result) {
+        chrome.experimental.processes.getProcessIdForTab(result[0].id, function(processId) {
           chrome.experimental.processes.terminate(processId);
         });
-      }
-    });
+      });
+      break;
+    case "Crucio":
+      // Handled by js/magic.js
+    case "Expecto Patronum":
+      // Handled by js/magic.js
+      break;
+    case "Protego":
+      chrome.windows.create({"url": request.url, "incognito": true});
+      break;
+    case "Reparo":
+      // Handled by js/magic.js
+      break;
+    default:
+      console.log("Request action not recognized.");
   }
 });
+

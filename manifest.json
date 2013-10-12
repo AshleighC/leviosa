@@ -21,6 +21,7 @@
       "js": [
         "js/leap.js",
         "js/jquery.js",
+        "js/magic.js",
         "js/leviosa.js"
       ],
       "run_at": "document_idle",
