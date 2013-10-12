@@ -1,3 +1,12 @@
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if ((request.action == "toggle") && (request.status == true)) {
+    alert("toggling on");
+  }
+  else if ((request.action == "toggle") && (request.status == false)) {
+    alert("toggling off");
+  }
+});
+
 // Whether Current Tab Has Focus
 var tab_has_focus = false;
 
