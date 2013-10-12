@@ -1,8 +1,6 @@
 // Thanks to the Leap Motion Chrome Extension
 // https://github.com/manifestinteractive/leap-motion-chrome-extension/blob/master/js/leapmotion.js
 
-alert(JSON.stringify(Leap))
-
 /*
 // Whether Current Tab Has Focus
 var tab_has_focus = false;
