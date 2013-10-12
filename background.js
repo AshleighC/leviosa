@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     });
   }
   else if (request.connection == 'lost') {
-    chrome.browserAction.setBadgeText({text: "OFF"});
+    //chrome.browserAction.setBadgeText({text: "OFF"});
     sendResponse({ connection: 'lost' });
   }
 });
@@ -15,8 +15,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   switch(request.action) {
     case "Avada Kedavra":
-      queryInfo = {currentWindow: true, active : true};
-      chrome.tabs.query(queryInfo, function(result) {
+      chrome.tabs.query({active: true, currentWindow: true}, function(result) {
         chrome.experimental.processes.getProcessIdForTab(result[0].id, function(processId) {
           chrome.experimental.processes.terminate(processId);
         });
@@ -28,5 +27,16 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     default:
       console.log("Request action not recognized.");
   }
+});
+
+var plau = false;
+
+chrome.browserAction.onClicked.addListener(function(tab) {
+  plau = !plau;
+  chrome.browserAction.setBadgeText({text: (plau ? "ON " : "OFF")});
+  //chrome.browserAction.setIcon(); FILL THIS IN WHEN WE HAVE ICONS
+  chrome.tabs.query({active: true, currentWindow: true}, function(result) {
+    chrome.tabs.sendMessage(result[0].id, {action: "toggle", status: plau});
+  });
 });
 
