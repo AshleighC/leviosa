@@ -1,0 +1,33 @@
+{
+  "manifest_version": 2,
+
+  "name": "Leviosa",
+  "description": "There was a lot more to magic, as Harry quickly found out, than waving your wand and saying a few funny words.",
+  "version": "1.0",
+
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "js/leap.js",
+        "js/jquery.js",
+        "js/leviosa.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+
+  "browser_action": {
+    "default_icon": "img/icon.png",
+    "default_title": "Leviosa"
+  }
+}

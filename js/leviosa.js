@@ -1,5 +1,9 @@
 // Thanks to the Leap Motion Chrome Extension
 // https://github.com/manifestinteractive/leap-motion-chrome-extension/blob/master/js/leapmotion.js
+
+alert(JSON.stringify(Leap))
+
+/*
 // Whether Current Tab Has Focus
 var tab_has_focus = false;
 
@@ -294,7 +298,7 @@ function page_transform(hands)
   if(leap_motion_settings.zoom === 'enabled' && leap_motion_settings.rotation === 'enabled')
   {
     $('html').css({
-      'transform': 'scale(' + hand._scaleFactor + ') rotate('+ rotation +'deg) translateZ(0)', /* W3C */
+      'transform': 'scale(' + hand._scaleFactor + ') rotate('+ rotation +'deg) translateZ(0)',
       '-webkit-transform': 'scale(' + hand._scaleFactor + ') rotate('+ rotation +'deg) translateZ(0)',
       'transformation-origin': 'center center'
     });
@@ -303,7 +307,7 @@ function page_transform(hands)
   else if(leap_motion_settings.zoom === 'enabled' && leap_motion_settings.rotation === 'disabled')
   {
     $('html').css({
-      'transform': 'scale(' + hand._scaleFactor + ') translateZ(0)', /* W3C */
+      'transform': 'scale(' + hand._scaleFactor + ') translateZ(0)',
       '-webkit-transform': 'scale(' + hand._scaleFactor + ') translateZ(0)',
       'transformation-origin': 'center center'
     });
@@ -312,7 +316,7 @@ function page_transform(hands)
   else if(leap_motion_settings.zoom === 'disabled' && leap_motion_settings.rotation === 'enabled')
   {
     $('html').css({
-      'transform': 'rotate('+ rotation +'deg) translateZ(0)', /* W3C */
+      'transform': 'rotate('+ rotation +'deg) translateZ(0)',
       '-webkit-transform': 'rotate('+ rotation +'deg) translateZ(0)',
       'transformation-origin': 'center center'
     });
@@ -468,3 +472,4 @@ Leap.loop({enableGestures: true}, function (frame, done){
 
   done();
 });
+*/
