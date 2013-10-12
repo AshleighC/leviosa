@@ -18,7 +18,7 @@ $('.sidebar img').css({
   'width': '230px',
 })
 
-$('.sidebar').append('<h2>Dictionary</h2>');
+$('.sidebar').append('<h2>Spellbook</h2>');
 $('.sidebar h2').css({
   'font-family': 'Open Sans',
   'text-transform': 'uppercase',
@@ -31,13 +31,17 @@ $('.sidebar h2').css({
 
 $('.sidebar').append('<ul></ul>');
 
-spells = ['Avada Kedavra', 'Crucio', 'Expecto Patronum', 'Protego', 'Reparo', 'Riddikulus'];
-instructions = ['Kills the page.', 'Causes excruciating pain.', 'Creates a patronus.', 'Gives protection', 'Repairs the page.', 'Zuckerbergmode']
-
-for(var j=0; j < spells.length; j++)
-{
-  $('.sidebar ul').append('<li class="spell-menu"><h3>' + spells[j] + '</h3><p>' + instructions[j] + '</p></li>');
+var spellbook = {
+  "Avada Kedavra": "Cause instantaneous death to a page.",
+  "Crucio": "Inflict excruciating pain on a page.",
+  "Expecto Patronum": "Summon a magical guardian, a projection of positive feelings.",
+  "Reparo": "Seamlessly repair a broken page.",
+  "Riddikulus": "Cause a page to assume a humorous form."
 }
+
+$.each(spellbook, function(spell, description) {
+  $('.sidebar ul').append('<li class="spell-menu"><h3>' + spell + '</h3><p>' + description + '</p></li>');
+});
 
 $('.spell-menu li').css({
   'list-style': 'none',
@@ -45,7 +49,7 @@ $('.spell-menu li').css({
 
 
 $('.spell-menu h3').css({
-  'margin-top': '15px',
+  'margin-top': '20px',
   'font-size': '15px',
 })
 
