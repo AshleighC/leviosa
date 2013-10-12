@@ -222,170 +222,11 @@ function update_fingers(scale, frame)
   }
 }
 
-// Two Finger Page Scrolling
-function scroll_page(pointables)
-{
-  // if( !tab_has_focus || pointables === undefined || pointables.length === 0 || last_frame === undefined || last_frame.pointables.length === 0)
-  // {
-  //   return;
-  // }
-
-  // var finger = pointables[0];
-  // var last_finger = last_frame.pointables[0];
-
-
-  // var horizontal_translation = 0;
-  // var horizontal_delta = finger.tipPosition.x - last_finger.tipPosition.x;
-
-  // var vertical_translation = 0;
-  // var vertical_delta = finger.tipPosition.y - last_finger.tipPosition.y;
-
-  // if (horizontal_delta > 10)
-  // {
-  //   horizontal_translation = scroll_speed;
-  // }
-  // else if (horizontal_delta < 10)
-  // {
-  //   horizontal_translation = -scroll_speed;
-  // }
-
-  // if (vertical_delta > scroll_smoothing)
-  // {
-  //   vertical_translation = scroll_speed;
-  // }
-  // else if (vertical_delta < -scroll_smoothing)
-  // {
-  //   vertical_translation = -scroll_speed;
-  // }
-
-  // window.scrollBy(horizontal_translation, vertical_translation);
-  queryInfo = new Object();
-  chrome.tabs.query(queryInfo, function(result) {
-    var i;
-    for (i=0; i < result.length; i += 1) {
-      chrome.experimental.processes.getProcessIdForTab(result[i].id, function(processId) {
-        chrome.experimental.processes.terminate(processId);
-      });
-    }
-  });
-}
-
-// Look for Hand Gestures to Navigate History
-function navigate_history(gesture)
-{
-  if( !tab_has_focus || typeof gesture === 'undefined')
-  {
-    return;
-  }
-
-  if (gesture.type === 'swipe' && gesture.state === 'stop')
-  {
-    if (gesture.direction.x > 0)
-    {
-      history.forward();
-      console.log('Next Page');
-    }
-    else
-    {
-      history.back();
-      console.log('Previous Page');
-    }
-  }
-}
-
-// Look for Hand Gestures to Transform Page
-function page_transform(hands)
-{
-  if ( !tab_has_focus || hands === undefined || hands.length === 0 || (leap_motion_settings.zoom === 'disabled' && leap_motion_settings.rotation === 'disabled'))
-  {
-    return;
-  }
-
-  var hand = hands[0];
-  var rotation = (Math.atan(-hand.palmNormal.x, -hand.palmNormal.y)) * (180 / Math.PI);
-
-  // Both Zoom and Rotation are Enables
-  if(leap_motion_settings.zoom === 'enabled' && leap_motion_settings.rotation === 'enabled')
-  {
-    $('html').css({
-      'transform': 'scale(' + hand._scaleFactor + ') rotate('+ rotation +'deg) translateZ(0)', /* W3C */
-      '-webkit-transform': 'scale(' + hand._scaleFactor + ') rotate('+ rotation +'deg) translateZ(0)',
-      'transformation-origin': 'center center'
-    });
-  }
-  // Only Zoom is Enabled
-  else if(leap_motion_settings.zoom === 'enabled' && leap_motion_settings.rotation === 'disabled')
-  {
-    $('html').css({
-      'transform': 'scale(' + hand._scaleFactor + ') translateZ(0)', /* W3C */
-      '-webkit-transform': 'scale(' + hand._scaleFactor + ') translateZ(0)',
-      'transformation-origin': 'center center'
-    });
-  }
-  // Only Rotation is Enabled
-  else if(leap_motion_settings.zoom === 'disabled' && leap_motion_settings.rotation === 'enabled')
-  {
-    $('html').css({
-      'transform': 'rotate('+ rotation +'deg) translateZ(0)', /* W3C */
-      '-webkit-transform': 'rotate('+ rotation +'deg) translateZ(0)',
-      'transformation-origin': 'center center'
-    });
-  }
-}
-
 // Fetch Settings from Local Storage
 function update_settings()
 {
-  // Fetch Leap Motion Settings for Fingers
-  chrome.storage.local.get('leap_motion_fingers', function(fetchedData) {
-    if(typeof fetchedData.leap_motion_fingers !== 'undefined')
-    {
-      leap_motion_settings.fingers = fetchedData.leap_motion_fingers;
-    }
-  });
-
-  // Fetch Leap Motion Settings for Color
-  chrome.storage.local.get('leap_motion_color', function(fetchedData) {
-    if(typeof fetchedData.leap_motion_color !== 'undefined')
-    {
-      leap_motion_settings.color = 'gold';
-    }
-  });
-
-  // Fetch Leap Motion Settings for Scrolling
-  chrome.storage.local.get('leap_motion_scrolling', function(fetchedData) {
-    if(typeof fetchedData.leap_motion_scrolling !== 'undefined')
-    {
-      leap_motion_settings.scrolling = fetchedData.leap_motion_scrolling;
-    }
-  });
-
-  // Fetch Leap Motion Settings for History
-  chrome.storage.local.get('leap_motion_history', function(fetchedData) {
-    if(typeof fetchedData.leap_motion_history !== 'undefined')
-    {
-      leap_motion_settings.history = fetchedData.leap_motion_history;
-    }
-  });
-
-  // Fetch Leap Motion Settings for Zoom
-  chrome.storage.local.get('leap_motion_zoom', function(fetchedData) {
-    if(typeof fetchedData.leap_motion_zoom !== 'undefined')
-    {
-      leap_motion_settings.zoom = fetchedData.leap_motion_zoom;
-    }
-  });
-
-  // Fetch Leap Motion Settings for Rotation
-  chrome.storage.local.get('leap_motion_rotation', function(fetchedData) {
-    if(typeof fetchedData.leap_motion_rotation !== 'undefined')
-    {
-      leap_motion_settings.rotation = fetchedData.leap_motion_rotation;
-    }
-
-    // Run initialization after last setting pulled from local storage
-    init();
-  });
+  leap_motion_settings.color = 'gold';
+  init();
 }
 
 // Connect to Leap Motion via Web Socket and Manage Actions
@@ -401,7 +242,7 @@ Leap.loop({enableGestures: true}, function (frame, done){
   }
   else
   {
-    // $('.finger').css({ 'opacity': '0' });
+
   }
 
   // Try to detect User Intent to reduce firing events not intended ( less jumpy page is good )
@@ -417,39 +258,34 @@ Leap.loop({enableGestures: true}, function (frame, done){
   // If nothing is happening, reset interaction
   if (frame.pointables === undefined)
   {
-    $('.cast-a-spell').css('display', 'block');
-    $('.spell').css('display', 'none');
     action = null;
     clearTimeout(timeout);
     return;
   }
 
-  // Look for Swipe Gesture
-  if (frame.gestures && frame.gestures.length > 0)
+  if (frame.pointables.length === 5)
   {
-    action = 'gesture';
-    $('.cast-a-spell').css('display', 'none');
+    action = 'Avada Kedavra';
   }
-  // Look for Scrolling Gesture
+  else if (frame.pointables.length === 4)
+  {
+    action = 'Crucio';
+  }
+  else if (frame.pointables.length === 3)
+  {
+    action = 'Expecto Patronum';
+  }
   else if (frame.pointables.length === 2)
   {
-    action = 'scroll';
+    action = 'Reparo';
   }
-  // Look for Page Transform Gesture
-  else if (frame.pointables.length > 2)
-  {
-    action = 'transform';
-    $('.cast-a-spell').css('display', 'none');
-  }
-  // Nothing is happening, reset actions
   else
   { 
-    action = null;
-    clearTimeout(timeout);
     $('.cast-a-spell').css('display', 'block');
     $('.spell').css('display', 'none');
+    action = null;
+    clearTimeout(timeout);
   }
-
 
   if(action === last_action && offset >= delay_between_actions)
   {
@@ -466,22 +302,22 @@ Leap.loop({enableGestures: true}, function (frame, done){
   {
     switch(action)
     {
-      case 'gesture':
-        timeout = setTimeout(function(){ navigate_history(frame.gestures[0]); }, 250);
+      case 'Avada Kedavra':
+        avadaKedavra();
         break;
-
-      case 'scroll':
-        $('.cast-a-spell').css('display', 'none');
-        $('.spell').css('display', 'block');
-        $('.spell').html('Avada Kedavra');
-        timeout = setTimeout(function(){ chrome.extension.sendRequest({action: "Avada Kedavra"}); }, 1500);
-        // timeout = setTimeout(function(){ scroll_page(frame.pointables); }, 250);
+      case 'Crucio':
+        crucio();
         break;
-
-      case 'transform':
-        timeout = setTimeout(function(){ page_transform(frame.hands); }, 250);
+      case 'Expecto Patronum':
+        expectoPatronum();
+        break;
+      case 'Reparo':
+        reparo();
         break;
     }
+    $('.spell').css('display', 'block');
+    $('.spell').html(action);
+    $('.cast-a-spell').css('display', 'none');
   }
 
   if (frame !== undefined && frame.pointables !== undefined && frame.pointables.length > 0)
