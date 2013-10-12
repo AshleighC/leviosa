@@ -1,10 +1,9 @@
 function avadaKedavra() {
-  // put code here
+  timeout = setTimeout(function(){ chrome.extension.sendRequest({ action: "Avada Kedavra" }); }, 1500);
 }
 
 function crucio() {
   $("*").css({"font-family": "Comic Sans MS"});
-  alert("hi");
 }
 
 function expectoPatronum() {
