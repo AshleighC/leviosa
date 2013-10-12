@@ -22,16 +22,8 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
         });
       });
       break;
-    case "Crucio":
-      // Handled by js/magic.js
-    case "Expecto Patronum":
-      // Handled by js/magic.js
-      break;
     case "Protego":
       chrome.windows.create({"url": request.url, "incognito": true});
-      break;
-    case "Reparo":
-      // Handled by js/magic.js
       break;
     default:
       console.log("Request action not recognized.");
