@@ -32,13 +32,12 @@ $('.sidebar h2').css({
 $('.sidebar').append('<ul></ul>');
 
 var spellbook = {
-  "Avada Kedavra": "Cause instantaneous death to a page.",
-  "Crucio": "Inflict excruciating pain on a page.",
-  "Expecto Patronum": "Summon a magical guardian, a projection of positive feelings.",
-  "Lumos": "Illuminate a page.",
-  "Protego": "Create a magical barrier to deflect the NSA.",
-  "Reparo": "Seamlessly repair a broken page.",
-  "Riddikulus": "Cause a page to assume a humorous form."
+  "Avada Kedavra": "Cause instantaneous death to a page.<br><i>Circle gesture</i>",
+  "Crucio": "Inflict excruciating pain on a page.<br><i>10 fingers</i>",
+  "Expecto Patronum": "Summon a magical guardian, a projection of positive feelings.<br><i>3 fingers</i>",
+  "Lumos": "Illuminate a page.<br><i>1 finger</i>",
+  "Reparo": "Seamlessly repair a broken page.<br><i>5 fingers</i>",
+  "Riddikulus": "Cause a page to assume a humorous form.<br><i>7 fingers</i>"
 }
 
 $.each(spellbook, function(spell, description) {
