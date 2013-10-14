@@ -76,17 +76,24 @@ $('.sidebar-tab, .sidebar').css({
   'transition': 'left 2s ease-in',
 })
 
-$('.sidebar-tab').on('click', function(){
-  if (menu_active === false)
-  {
+function click() {
+  if (menu_active === false) {
     $('.sidebar-tab').css('left', '270px');
     $('.sidebar').css('left', '0');
     menu_active = true;
-  } 
-  else 
-  {
+  }
+  else {
     $('.sidebar-tab').css('left', '0');
     $('.sidebar').css('left', '-270px');
     menu_active = false
   }
+};
+
+$('.sidebar-tab').on('click', click);
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.action == "click") {
+    click();
+  }
 });
+

@@ -29,3 +29,9 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   }
 });
 
+chrome.browserAction.onClicked.addListener(function(tab) {
+  chrome.tabs.query({active: true, currentWindow: true}, function(result) {
+    chrome.tabs.sendMessage(result[0].id, {action: "click"});
+  });
+});
+
