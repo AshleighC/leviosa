@@ -1,11 +1,14 @@
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if ((request.action == "toggle") && (request.status == true)) {
-    alert("toggling on");
-  }
-  else if ((request.action == "toggle") && (request.status == false)) {
-    alert("toggling off");
-  }
-});
+// var toggle = false;
+
+// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+//   if ((request.action == "toggle") && (request.status == true)) {
+//     toggle = true;
+//   }
+//   else if ((request.action == "toggle") && (request.status == false)) {
+//     // alert("toggling off");
+//     toggle = false;
+//   }
+// });
 
 // Whether Current Tab Has Focus
 var tab_has_focus = false;
@@ -17,7 +20,7 @@ var action = null;
 var last_action = null;
 var start_action = 0;
 var intent = false;
-var delay_between_actions = 1;
+var delay_between_actions = 8;
 var timeout = null;
 var tutorial = false;
 
@@ -33,7 +36,7 @@ var scroll_speed = 20;
 var scroll_smoothing = 4;
 
 // Size for Finger Rendering in Pixels
-var finger_size = 70;
+var finger_size = 125;
 
 // Colors for Fingers
 var gold = '#f8da00';
@@ -53,7 +56,7 @@ var leap_motion_settings = {
 
 $('body').append('<div class="cast-a-spell">Cast a Spell</div>');
 $('.cast-a-spell').css({
-  'display': 'block',
+  'display': 'none',
   'font-family': 'Lavanderia',
   'font-weight': 'Bold',
   'text-align': 'center',
@@ -67,7 +70,7 @@ $('.cast-a-spell').css({
   'text-shadow': 'rgba(255, 224, 25, 0.298039) 0px 0px 10px',
 })
 
-$('body').append('<div class="spell">Cast a Spell</div>');
+$('body').append('<div class="spell"></div>');
 $('.spell').css({
   'font-family': 'Lavanderia',
   'font-weight': 'Bold',
@@ -213,12 +216,23 @@ function update_fingers(scale, frame)
 
   // Make sure there are at least two fingers to render, since that is the minimum for an action
   // Also prevents forehead / face from registering as a finger during typing
-  for(var j=0; j<frame.fingers.length; j++)
-  {
-    var top = ( height / 2 ) - frame.fingers[j].tipPosition.y;
-    var left = ( width / 2 ) + frame.fingers[j].tipPosition.x;
+  // for(var j=0; j<frame.fingers.length; j++)
+  // {
+  //   var top = ( height / 2 ) - frame.fingers[j].tipPosition.y;
+  //   var left = ( width / 2 ) + frame.fingers[j].tipPosition.x;
 
-    $('#finger' + (j+1)).css({
+  //   $('#finger' + (j+1)).css({
+  //     'top': 0,
+  //     'left': 0,
+  //     'position': 'fixed',
+  //     'transform': 'translate3d('+left.toFixed(2)+'px, '+top.toFixed(2)+'px, 0)',
+  //     'opacity': '1.0'
+  //   });
+  // }
+  if (frame.fingers.length > 0) {
+    var top = ( height / 2 ) - frame.fingers[0].tipPosition.y;
+    var left = ( width / 2 ) + frame.fingers[0].tipPosition.x;
+    $('#finger' + (1)).css({
       'top': 0,
       'left': 0,
       'position': 'fixed',
@@ -237,7 +251,7 @@ function update_settings()
 
 // Connect to Leap Motion via Web Socket and Manage Actions
 Leap.loop({enableGestures: true}, function (frame, done){
-  $('.cast-a-spell').css('display', 'block');
+  // $('.cast-a-spell').css('display', 'block');
   last_poll = new Date().getTime() / 1000;
 
   // Update Finger Position
@@ -270,19 +284,14 @@ Leap.loop({enableGestures: true}, function (frame, done){
     return;
   }
 
-  // if (frame.pointables.length === 5)
-  // if (frame.gestures && frame.gestures.length > 0)
-  // {
-  //   if (frame.gestures[0].type === 'swipe' && frame.gestures[0].state === 'stop')
-  //   {
-  //     action = 'Avada Kedavra';
-  //   }
-  // }
-  if (frame.pointables.length === 10)
+  if (frame.gestures && frame.gestures.length > 0)
   {
-    action = 'Avada Kedavra';
+    if (frame.gestures[0].type === 'circle')
+    {
+      action = 'Avada Kedavra';
+    }
   }
-  else if (frame.pointables.length === 4)
+  else if (frame.pointables.length === 10)
   {
     action = 'Crucio';
   }
@@ -290,17 +299,13 @@ Leap.loop({enableGestures: true}, function (frame, done){
   {
     action = 'Expecto Patronum';
   }
-  else if (frame.pointables.length === 2)
+  else if (frame.pointables.length === 5)
   {
     action = 'Reparo';
   }
-  else if (frame.pointables.length === 6)
+  else if (frame.pointables.length > 5 && frame.pointables.length < 8)
   {
     action = 'Riddikulus';
-  }
-  else if (frame.pointables.length === 8)
-  {
-    $('.sidebar-tab').click();
   }
   else
   { 
@@ -310,8 +315,6 @@ Leap.loop({enableGestures: true}, function (frame, done){
     clearTimeout(timeout);
   }
 
-  console.log(action);
-  console.log(last_action)
   if(action === last_action && offset >= delay_between_actions || tutorial != true)
   {
     intent = true;
@@ -323,7 +326,7 @@ Leap.loop({enableGestures: true}, function (frame, done){
     clearTimeout(timeout);
   }
 
-  if (action === null || tutorial == true)
+  if (action === null)
   {
     intent = false;
   }
@@ -331,27 +334,26 @@ Leap.loop({enableGestures: true}, function (frame, done){
   if(intent)
   {
     var color;
-    console.log(action);
     switch(action)
     {
       case 'Avada Kedavra':
-        timeout = setTimeout(function(){ avadaKedavra(); }, 1000);
+        timeout = setTimeout(function(){ avadaKedavra(); }, 3000);
         color = 'rgba(51, 224, 18, 0.5) 0px 0px 20px';
         break;
       case 'Crucio':
-        timeout = setTimeout(function(){ crucio(); }, 1650);
+        timeout = setTimeout(function(){ crucio(); }, 1800);
         color = 'rgba(255, 0, 7, 0.5) 0px 0px 20px';
         break;
       case 'Expecto Patronum':
-        timeout = setTimeout(function(){ expectoPatronum(); }, 1650);
+        timeout = setTimeout(function(){ expectoPatronum(); }, 1800);
         color = 'rgba(0, 209, 237, 0.5) 0px 0px 20px';
         break;
       case 'Reparo':
-        timeout = setTimeout(function(){ reparo(); }, 1650);
+        timeout = setTimeout(function(){ reparo(); }, 1800);
         color = 'rgba(255, 224, 25, 0.30) 0px 0px 20px';
         break;
       case 'Riddikulus':
-        timeout = setTimeout(function(){ riddikulus(); }, 1650);
+        timeout = setTimeout(function(){ riddikulus(); }, 1800);
         color = 'rgba(255, 224, 25, 0.30) 0px 0px 20px';
         break;
     }
@@ -359,6 +361,7 @@ Leap.loop({enableGestures: true}, function (frame, done){
       'display': 'block',
       'text-shadow': color,
     });
+
     $('.spell').html(action);
     $('.cast-a-spell').css('display', 'none');
   }

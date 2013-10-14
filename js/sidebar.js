@@ -35,6 +35,8 @@ var spellbook = {
   "Avada Kedavra": "Cause instantaneous death to a page.",
   "Crucio": "Inflict excruciating pain on a page.",
   "Expecto Patronum": "Summon a magical guardian, a projection of positive feelings.",
+  "Lumos": "Illuminate a page.",
+  "Protego": "Create a magical barrier to deflect the NSA.",
   "Reparo": "Seamlessly repair a broken page.",
   "Riddikulus": "Cause a page to assume a humorous form."
 }
@@ -43,7 +45,7 @@ $.each(spellbook, function(spell, description) {
   $('.sidebar ul').append('<li class="spell-menu"><h3>' + spell + '</h3><p>' + description + '</p></li>');
 });
 
-$('.spell-menu li').css({
+$('.sidebar ul li.spell-menu').css({
   'list-style': 'none',
 })
 
