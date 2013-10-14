@@ -29,8 +29,8 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   }
 });
 
+/* commented out because this isn't working...
 var plau = false;
-
 chrome.browserAction.onClicked.addListener(function(tab) {
   plau = !plau;
   chrome.browserAction.setBadgeText({text: (plau ? "ON " : "OFF")});
@@ -39,4 +39,5 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.sendMessage(result[0].id, {action: "toggle", status: plau});
   });
 });
+*/
 
