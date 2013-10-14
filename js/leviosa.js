@@ -1,15 +1,3 @@
-// var toggle = false;
-
-// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-//   if ((request.action == "toggle") && (request.status == true)) {
-//     toggle = true;
-//   }
-//   else if ((request.action == "toggle") && (request.status == false)) {
-//     // alert("toggling off");
-//     toggle = false;
-//   }
-// });
-
 // Whether Current Tab Has Focus
 var tab_has_focus = false;
 
@@ -374,3 +362,4 @@ Leap.loop({enableGestures: true}, function (frame, done){
 
   done();
 });
+

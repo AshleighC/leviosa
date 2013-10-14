@@ -29,15 +29,3 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   }
 });
 
-/* commented out because this isn't working...
-var plau = false;
-chrome.browserAction.onClicked.addListener(function(tab) {
-  plau = !plau;
-  chrome.browserAction.setBadgeText({text: (plau ? "ON " : "OFF")});
-  //chrome.browserAction.setIcon(); FILL THIS IN WHEN WE HAVE ICONS
-  chrome.tabs.query({active: true, currentWindow: true}, function(result) {
-    chrome.tabs.sendMessage(result[0].id, {action: "toggle", status: plau});
-  });
-});
-*/
-
