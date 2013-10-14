@@ -23,8 +23,7 @@
         "js/jquery.js",
         "js/magic.js",
         "js/sidebar.js",
-        "js/leviosa.js",
-        "js/getting-started.js"
+        "js/leviosa.js"
       ],
       "run_at": "document_idle",
       "all_frames": false
